@@ -38,6 +38,7 @@ myDataFrame["Size"] = myDataFrame["Size"].apply(
 )
 myDataFrame["Size"] = myDataFrame["Size"].astype(float)
 
+datas = []
 for column_name in column_names:
     print(column_name)
     installs_min = myDataFrame[column_name].min()
@@ -63,15 +64,34 @@ for column_name in column_names:
     #     & (myDataFrame[column_name] <= upper_bound)
     # ]
 
-    print(outliers1[column_name])
-    print(outliers2[column_name])
-    print("Min: ", installs_min)
-    print("Max: ", installs_max)
-    print("Mean: ", installs_mean)
-    print("Median: ", installs_median)
-    print("Mode: ", installs_mode)
+    # print(outliers1[column_name])
+    # print(outliers2[column_name])
+    # print("Min: ", installs_min)
+    # print("Max: ", installs_max)
+    # print("Mean: ", installs_mean)
+    # print("Median: ", installs_median)
+    # print("Mode: ", installs_mode)
+    
+    d = {'name': column_name, 
+         'type': myDataFrame[column_name].dtype,
+         'range': installs_max - installs_min,
+         'Min': installs_min, 
+         'Max': installs_max, 
+         'Mean': installs_mean, 
+         'Median': installs_median, 
+         'Mode': installs_mode, 
+         'lower outliers': outliers1[column_name].shape[0], 
+         'upper outliers': outliers2[column_name].shape[0]}
+
+    datas.append(d)
 
     plt.figure(figsize=(12, 6))
     sns.boxplot(y=myDataFrame[column_name])
     plt.title(f"Boxplot of {column_name}")
     plt.show()
+pd.options.display.float_format = '{:.2f}'.format
+# Create DataFrame
+df = pd.DataFrame(datas)
+df.to_csv('googleplay_analyze.csv')
+# Display DataFrame
+df
